@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>한지은 | PUBG Studios 통역사</title>
+  <style>
+    :root {
+      --bg: #0d0d0d;
+      --surface: #161616;
+      --card: #1e1e1e;
+      --accent: #f5c518;
+      --accent2: #ff6b35;
+      --text: #f0f0f0;
+      --muted: #888;
+      --border: #2a2a2a;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', 'Apple SD Gothic Neo', sans-serif;
+      line-height: 1.7;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(13, 13, 13, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 5%;
+      height: 60px;
+    }
+
+    .nav-logo {
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--accent);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 2rem;
+    }
+
+    nav ul a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    nav ul a:hover {
+      color: var(--accent);
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 0 10%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 80% 50%, rgba(245, 197, 24, 0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(255, 107, 53, 0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(245, 197, 24, 0.12);
+      border: 1px solid rgba(245, 197, 24, 0.3);
+      border-radius: 999px;
+      padding: 0.3rem 1rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-tag::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .hero h1 {
+      font-size: clamp(3rem, 8vw, 6.5rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -2px;
+    }
+
+    .hero h1 .name {
+      color: var(--accent);
+      display: block;
+    }
+
+    .hero h1 .role {
+      color: var(--text);
+      display: block;
+      font-size: clamp(1.2rem, 3vw, 2rem);
+      font-weight: 400;
+      letter-spacing: 0px;
+      margin-top: 0.5rem;
+      color: var(--muted);
+    }
+
+    .hero-desc {
+      max-width: 520px;
+      margin-top: 1.5rem;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .hero-cta {
+      margin-top: 2.5rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 2rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-decoration: none;
+      letter-spacing: 0.5px;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+    }
+
+    .btn-primary:hover {
+      background: #e0b015;
+      transform: translateY(-2px);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 10%;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--muted);
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .scroll-hint::after {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 1px;
+      background: var(--muted);
+    }
+
+    /* SECTIONS */
+    section {
+      padding: 6rem 10%;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 1rem;
+    }
+
+    .divider {
+      width: 40px;
+      height: 3px;
+      background: var(--accent);
+      border-radius: 2px;
+      margin-bottom: 3rem;
+    }
+
+    /* ABOUT */
+    #about {
+      background: var(--surface);
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .about-text p {
+      color: var(--muted);
+      margin-bottom: 1.2rem;
+    }
+
+    .about-text p strong {
+      color: var(--text);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 0.4rem;
+      letter-spacing: 0.5px;
+    }
+
+    /* SKILLS */
+    #skills {
+      background: var(--bg);
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .skill-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .skill-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+    }
+
+    .skill-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .skill-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .skill-card p {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .skill-bar-wrap {
+      margin-top: 1rem;
+      background: var(--border);
+      border-radius: 999px;
+      height: 4px;
+      overflow: hidden;
+    }
+
+    .skill-bar {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transition: width 1s ease;
+    }
+
+    /* EXPERIENCE */
+    #experience {
+      background: var(--surface);
+    }
+
+    .timeline {
+      position: relative;
+      padding-left: 2rem;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--border);
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 3rem;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -2.45rem;
+      top: 0.4rem;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--bg);
+    }
+
+    .timeline-date {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 0.3rem;
+    }
+
+    .timeline-item h3 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      margin-bottom: 0.2rem;
+    }
+
+    .timeline-item .company {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .timeline-item p {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    /* PORTFOLIO */
+    #portfolio {
+      background: var(--bg);
+    }
+
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .portfolio-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .portfolio-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--accent);
+    }
+
+    .portfolio-thumb {
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      background: linear-gradient(135deg, #1e1e1e, #2a2a2a);
+    }
+
+    .portfolio-body {
+      padding: 1.5rem;
+    }
+
+    .portfolio-tag {
+      display: inline-block;
+      background: rgba(245, 197, 24, 0.12);
+      color: var(--accent);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border-radius: 4px;
+      padding: 0.2rem 0.6rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .portfolio-body h3 {
+      font-size: 1rem;
+      font-weight: 800;
+      margin-bottom: 0.4rem;
+    }
+
+    .portfolio-body p {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    /* CONTACT */
+    #contact {
+      background: var(--surface);
+      text-align: center;
+    }
+
+    #contact .section-label,
+    #contact .section-title,
+    #contact .divider {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    #contact .divider {
+      margin-bottom: 1rem;
+    }
+
+    .contact-desc {
+      color: var(--muted);
+      max-width: 480px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1.5rem;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .contact-link:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    footer span {
+      color: var(--accent);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav ul { display: none; }
+      .hero { padding: 0 6%; }
+      section { padding: 4rem 6%; }
+      .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">JE.HAN</div>
+    <ul>
+      <li><a href="#about">소개</a></li>
+      <li><a href="#skills">스킬</a></li>
+      <li><a href="#experience">경력</a></li>
+      <li><a href="#portfolio">포트폴리오</a></li>
+      <li><a href="#contact">연락처</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-tag">Available for Projects</div>
+    <h1>
+      <span class="name">한지은</span>
+      <span class="role">MZ 통역사 @ PUBG Studios</span>
+    </h1>
+    <p class="hero-desc">
+      게임 산업의 언어 장벽을 허무는 통역사.<br>
+      한국어 · 영어를 넘나들며 글로벌 게임 개발 현장의 소통을 이어갑니다.
+    </p>
+    <div class="hero-cta">
+      <a href="#portfolio" class="btn btn-primary">포트폴리오 보기</a>
+      <a href="#contact" class="btn btn-ghost">연락하기</a>
+    </div>
+    <div class="scroll-hint">Scroll</div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-label">About Me</div>
+    <div class="section-title">나는 누구인가요?</div>
+    <div class="divider"></div>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>
+          안녕하세요! 저는 <strong>PUBG Studios</strong>에서 근무 중인 통역사 <strong>한지은</strong>입니다.
+          게임 개발사라는 역동적인 환경 속에서 국내외 팀 간의 원활한 소통을 돕고 있습니다.
+        </p>
+        <p>
+          MZ세대 특유의 감각으로 최신 게이밍 트렌드와 팝컬처를 누구보다 빠르게 이해하고,
+          이를 통역 · 번역 작업에 자연스럽게 녹여냅니다.
+        </p>
+        <p>
+          단순한 언어 변환을 넘어 <strong>문화적 뉘앙스</strong>까지 전달하는 것이 저의 강점입니다.
+          회의 통역부터 마케팅 카피 로컬라이제이션까지, 다양한 분야에서 경험을 쌓아왔습니다.
+        </p>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number">3+</div>
+          <div class="stat-label">경력 연수</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">200+</div>
+          <div class="stat-label">통역 프로젝트</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">2</div>
+          <div class="stat-label">주요 언어</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">99%</div>
+          <div class="stat-label">클라이언트 만족도</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="section-label">Skills</div>
+    <div class="section-title">전문 역량</div>
+    <div class="divider"></div>
+    <div class="skills-grid">
+      <div class="skill-card">
+        <div class="skill-icon">🇰🇷🇺🇸</div>
+        <h3>한 · 영 순차 통역</h3>
+        <p>회의, 인터뷰, 프레젠테이션 등 다양한 현장에서의 순차 통역 전문</p>
+        <div class="skill-bar-wrap">
+          <div class="skill-bar" style="width: 95%"></div>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">🎮</div>
+        <h3>게임 로컬라이제이션</h3>
+        <p>게임 UI/UX 텍스트, 스토리, 마케팅 소재의 현지화 번역 작업</p>
+        <div class="skill-bar-wrap">
+          <div class="skill-bar" style="width: 90%"></div>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">📱</div>
+        <h3>MZ 트렌드 커뮤니케이션</h3>
+        <p>SNS, 밈, 슬랭 등 최신 언어 트렌드를 정확히 파악하고 적용</p>
+        <div class="skill-bar-wrap">
+          <div class="skill-bar" style="width: 98%"></div>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">🎯</div>
+        <h3>동시 통역</h3>
+        <p>글로벌 컨퍼런스 및 온라인 이벤트에서의 동시 통역 경험 보유</p>
+        <div class="skill-bar-wrap">
+          <div class="skill-bar" style="width: 82%"></div>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">✍️</div>
+        <h3>카피라이팅 & 번역</h3>
+        <p>게임 마케팅 카피, 보도자료, SNS 콘텐츠 번역 및 현지화</p>
+        <div class="skill-bar-wrap">
+          <div class="skill-bar" style="width: 88%"></div>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">🤝</div>
+        <h3>크로스컬처 커뮤니케이션</h3>
+        <p>한국 · 영미권 문화 차이를 이해하고 오해 없이 메시지 전달</p>
+        <div class="skill-bar-wrap">
+          <div class="skill-bar" style="width: 93%"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="section-label">Experience</div>
+    <div class="section-title">경력 및 학력</div>
+    <div class="divider"></div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-date">2023 — 현재</div>
+        <h3>통역사 / PUBG Studios</h3>
+        <div class="company">크래프톤 · 서울, 대한민국</div>
+        <p>글로벌 게임 개발팀과 국내 팀 간 실시간 회의 통역, 게임 콘텐츠 로컬라이제이션,
+           해외 파트너사 미팅 통역 및 협업 지원.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">2022 — 2023</div>
+        <h3>프리랜서 게임 번역가</h3>
+        <div class="company">다수 게임사 · 원격</div>
+        <p>모바일/PC 게임 텍스트 한 → 영, 영 → 한 번역. UI 문자열, 스토리 스크립트,
+           고객지원 문서 등 다양한 유형의 콘텐츠 작업.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">2018 — 2022</div>
+        <h3>영어영문학 / 통번역학 복수전공</h3>
+        <div class="company">국내 4년제 대학교</div>
+        <p>통역 이론 및 실습, 비즈니스 영어, 미디어 번역 등 전문 교육 이수.
+           교내 국제 교류 행사 통역 봉사 다수 참여.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PORTFOLIO -->
+  <section id="portfolio">
+    <div class="section-label">Portfolio</div>
+    <div class="section-title">주요 작업물</div>
+    <div class="divider"></div>
+    <div class="portfolio-grid">
+      <div class="portfolio-card">
+        <div class="portfolio-thumb">🔫</div>
+        <div class="portfolio-body">
+          <span class="portfolio-tag">로컬라이제이션</span>
+          <h3>PUBG: BATTLEGROUNDS 시즌 패치노트 번역</h3>
+          <p>신규 시즌 패치노트 및 업데이트 콘텐츠 한↔영 번역. 게이머 친화적 톤 유지.</p>
+        </div>
+      </div>
+      <div class="portfolio-card">
+        <div class="portfolio-thumb">🎤</div>
+        <div class="portfolio-body">
+          <span class="portfolio-tag">현장 통역</span>
+          <h3>글로벌 게임 개발자 컨퍼런스 순차 통역</h3>
+          <p>해외 개발사 파트너십 미팅 및 기술 발표 현장 순차 통역 지원.</p>
+        </div>
+      </div>
+      <div class="portfolio-card">
+        <div class="portfolio-thumb">📣</div>
+        <div class="portfolio-body">
+          <span class="portfolio-tag">마케팅</span>
+          <h3>SNS 마케팅 캠페인 카피 로컬라이제이션</h3>
+          <p>MZ세대 타겟 글로벌 마케팅 소재 번역. 문화적 유머 코드 살린 현지화.</p>
+        </div>
+      </div>
+      <div class="portfolio-card">
+        <div class="portfolio-thumb">🌐</div>
+        <div class="portfolio-body">
+          <span class="portfolio-tag">통번역</span>
+          <h3>크래프톤 투자자 IR 자료 번역</h3>
+          <p>분기별 실적 발표 자료 및 투자자 Q&A 통역 지원. 금융/비즈니스 용어 전문성 발휘.</p>
+        </div>
+      </div>
+      <div class="portfolio-card">
+        <div class="portfolio-thumb">🎮</div>
+        <div class="portfolio-body">
+          <span class="portfolio-tag">로컬라이제이션</span>
+          <h3>신규 모바일 게임 전체 텍스트 번역</h3>
+          <p>출시 전 게임의 전체 UI, 스토리, 튜토리얼 텍스트 영→한 완전 번역.</p>
+        </div>
+      </div>
+      <div class="portfolio-card">
+        <div class="portfolio-thumb">🎙️</div>
+        <div class="portfolio-body">
+          <span class="portfolio-tag">미디어</span>
+          <h3>유튜브/트위치 게임 콘텐츠 자막 번역</h3>
+          <p>글로벌 게임 크리에이터 콜라보 영상 자막 현지화. 팬덤 문화 반영한 자연스러운 번역.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="section-label">Contact</div>
+    <div class="section-title">함께 일해요!</div>
+    <div class="divider"></div>
+    <p class="contact-desc">
+      통역 · 번역 프로젝트 문의, 협업 제안, 혹은 그냥 안녕 인사도 언제든 환영합니다.
+    </p>
+    <div class="contact-links">
+      <a href="mailto:jieun@example.com" class="contact-link">
+        📧 이메일 보내기
+      </a>
+      <a href="https://linkedin.com" class="contact-link" target="_blank">
+        💼 LinkedIn
+      </a>
+      <a href="https://instagram.com" class="contact-link" target="_blank">
+        📸 Instagram
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>Designed & built with 💛 by <span>한지은</span> &nbsp;·&nbsp; 2026</p>
+  </footer>
+
+</body>
+</html>
