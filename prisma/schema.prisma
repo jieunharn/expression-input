@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Expression {
+  id            String    @id @default(cuid())
+  english       String
+  koreanOptions Json
+  exampleEn     String?
+  exampleKo     String?
+  notes         String?
+  difficulty    Int       @default(1)
+  categoryId    String
+  category      Category  @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  tags          Tag[]
+
+  easeFactor    Float     @default(2.5)
+  interval      Int       @default(0)
+  repetitions   Int       @default(0)
+  nextReview    DateTime  @default(now())
+  lastReviewed  DateTime?
+
+  timesStudied  Int       @default(0)
+  timesCorrect  Int       @default(0)
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([english])
+  @@index([nextReview])
+  @@index([categoryId])
+}
+
+model Category {
+  id           String       @id @default(cuid())
+  name         String       @unique
+  color        String       @default("#6366f1")
+  isDefault    Boolean      @default(false)
+  expressions  Expression[]
+  createdAt    DateTime     @default(now())
+}
+
+model Tag {
+  id           String       @id @default(cuid())
+  name         String       @unique
+  expressions  Expression[]
+}
+
+model AppStats {
+  id                 String    @id @default("app")
+  lastStudyDate      DateTime?
+  studyStreak        Int       @default(0)
+  totalStudySessions Int       @default(0)
+}
+
+model StudySessionLog {
+  id         String   @id @default(cuid())
+  mode       String
+  startedAt  DateTime @default(now())
+  endedAt    DateTime?
+  totalItems Int      @default(0)
+  correct    Int      @default(0)
+  accuracy   Float?
+  categoryId String?
+}

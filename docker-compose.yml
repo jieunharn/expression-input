@@ -1,0 +1,15 @@
+# Optional: 로컬 개발용 PostgreSQL (docker compose up -d)
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: expression_bank
+    ports:
+      - "5432:5432"
+    volumes:
+      - expression_pg:/var/lib/postgresql/data
+
+volumes:
+  expression_pg:
