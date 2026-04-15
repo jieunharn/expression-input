@@ -1,0 +1,1494 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>표현 노트 — Expression Bank</title>
+<style>
+  :root {
+    --bg: #faf8f5;
+    --surface: #ffffff;
+    --surface2: #f5f0e8;
+    --border: #e8e0d0;
+    --text: #2c2416;
+    --text-secondary: #7a6a52;
+    --accent: #c17f3e;
+    --accent-light: #f0e4ce;
+    --accent-dark: #9a6030;
+    --green: #4a8c6a;
+    --green-light: #d4ede0;
+    --red: #c0443c;
+    --red-light: #fde8e7;
+    --radius: 12px;
+    --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── Navigation ── */
+  nav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    height: 60px;
+    gap: 8px;
+  }
+
+  .nav-brand {
+    font-weight: 800;
+    font-size: 17px;
+    color: var(--accent);
+    margin-right: 20px;
+    white-space: nowrap;
+    letter-spacing: -0.3px;
+  }
+
+  .nav-tabs { display: flex; gap: 4px; flex: 1; }
+
+  .nav-tab {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+
+  .nav-tab:hover { background: var(--surface2); color: var(--text); }
+  .nav-tab.active { background: var(--accent-light); color: var(--accent-dark); font-weight: 700; }
+
+  /* ── Layout ── */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 24px;
+  }
+
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+  }
+
+  /* ── Form ── */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.full { grid-column: 1 / -1; }
+
+  label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+  }
+
+  input[type="text"], textarea, select {
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: inherit;
+    background: var(--bg);
+    color: var(--text);
+    transition: border-color 0.15s, background 0.15s;
+    resize: vertical;
+  }
+
+  input[type="text"]:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: white;
+  }
+
+  textarea { min-height: 76px; line-height: 1.6; }
+
+  /* ── Buttons ── */
+  .btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary:hover { background: var(--accent-dark); }
+
+  .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { background: var(--border); }
+
+  .btn-ghost { background: none; color: var(--text-secondary); padding: 6px 12px; }
+  .btn-ghost:hover { background: var(--surface2); color: var(--text); }
+
+  .btn-danger { background: var(--red-light); color: var(--red); border: 1px solid var(--red); }
+  .btn-danger:hover { background: var(--red); color: white; }
+
+  /* ── Tags ── */
+  .tags-input {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    min-height: 42px;
+    cursor: text;
+    transition: border-color 0.15s;
+  }
+
+  .tags-input:focus-within { border-color: var(--accent); background: white; }
+
+  .tag-pill {
+    background: var(--accent-light);
+    color: var(--accent-dark);
+    padding: 2px 8px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .tag-pill button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--accent-dark);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    opacity: 0.5;
+  }
+
+  .tag-pill button:hover { opacity: 1; }
+
+  .tags-input input {
+    border: none;
+    background: none;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--text);
+    min-width: 80px;
+    flex: 1;
+    padding: 2px 4px;
+  }
+
+  .tags-input input:focus { outline: none; }
+
+  /* ── Section ── */
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    gap: 16px;
+  }
+
+  .section-title { font-size: 22px; font-weight: 800; letter-spacing: -0.3px; }
+  .section-sub { font-size: 14px; color: var(--text-secondary); margin-top: 4px; }
+
+  /* ── Search bar ── */
+  .search-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .search-bar input { flex: 1; min-width: 200px; }
+  .search-bar select { min-width: 130px; }
+
+  /* ── Expression cards ── */
+  .expressions-list { display: flex; flex-direction: column; gap: 12px; }
+
+  .expr-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    box-shadow: var(--shadow);
+    transition: box-shadow 0.15s, transform 0.1s;
+  }
+
+  .expr-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.11); }
+
+  .expr-main {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .expr-content { flex: 1; min-width: 0; }
+
+  .expr-english {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 3px;
+    line-height: 1.4;
+  }
+
+  .expr-korean {
+    font-size: 15px;
+    color: var(--accent-dark);
+    font-weight: 500;
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+
+  .expr-meta {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  .source-badge {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 100px;
+    font-weight: 700;
+  }
+
+  .source-article  { background: #e8f4ff; color: #2472b0; }
+  .source-podcast  { background: #f0e8ff; color: #6840b0; }
+  .source-drama    { background: #ffe8f0; color: #b04070; }
+  .source-movie    { background: #fff0e0; color: #b06020; }
+  .source-book     { background: #e8ffe8; color: #408040; }
+  .source-other    { background: var(--surface2); color: var(--text-secondary); }
+
+  .source-name { font-size: 12px; color: var(--text-secondary); font-style: italic; }
+  .expr-date { font-size: 12px; color: var(--text-secondary); }
+
+  .expr-review-badge {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 100px;
+    background: var(--surface2);
+    color: var(--text-secondary);
+    font-weight: 600;
+    border: 1px solid var(--border);
+  }
+
+  .expr-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+  .icon-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: all 0.15s;
+    color: var(--text-secondary);
+  }
+
+  .icon-btn:hover { background: var(--accent-light); border-color: var(--accent); }
+  .icon-btn.delete:hover { background: var(--red-light); border-color: var(--red); }
+
+  /* ── Example block ── */
+  .expr-examples {
+    display: none;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--border);
+  }
+
+  .expr-examples.open { display: block; }
+
+  .expr-example-en {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.65;
+    font-style: italic;
+    margin-bottom: 4px;
+  }
+
+  .expr-example-ko {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+
+  /* ── Empty state ── */
+  .empty-state {
+    text-align: center;
+    padding: 60px 24px;
+    color: var(--text-secondary);
+  }
+
+  .empty-icon { font-size: 48px; margin-bottom: 16px; }
+  .empty-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+  .empty-desc { font-size: 14px; line-height: 1.7; }
+
+  /* ── Review ── */
+  .review-config {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+    box-shadow: var(--shadow);
+    max-width: 480px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .config-title { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+  .config-sub { color: var(--text-secondary); font-size: 14px; margin-bottom: 28px; line-height: 1.6; }
+
+  .config-options { display: flex; flex-direction: column; gap: 14px; margin-bottom: 28px; text-align: left; }
+
+  .config-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .config-row label {
+    text-transform: none;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: 0;
+  }
+
+  .config-row select { min-width: 170px; }
+
+  .progress-bar-wrap {
+    width: 100%;
+    height: 6px;
+    background: var(--border);
+    border-radius: 100px;
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-dark));
+    border-radius: 100px;
+    transition: width 0.4s ease;
+  }
+
+  .review-progress {
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  /* ── Flashcard ── */
+  .flashcard-area { display: flex; flex-direction: column; align-items: center; }
+
+  .flashcard {
+    width: 100%;
+    max-width: 580px;
+    perspective: 1200px;
+    cursor: pointer;
+    margin-bottom: 28px;
+    user-select: none;
+  }
+
+  .flashcard-inner {
+    position: relative;
+    width: 100%;
+    min-height: 260px;
+    transition: transform 0.55s cubic-bezier(0.4,0,0.2,1);
+    transform-style: preserve-3d;
+  }
+
+  .flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+
+  .flashcard-front, .flashcard-back {
+    position: absolute;
+    width: 100%;
+    min-height: 260px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 18px;
+    padding: 44px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .flashcard-front {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  }
+
+  .flashcard-back {
+    transform: rotateY(180deg);
+    background: linear-gradient(135deg, #fdf5e8, #f5e5c8);
+    border: 2px solid var(--accent);
+    box-shadow: 0 8px 32px rgba(193,127,62,0.2);
+  }
+
+  .flashcard-hint {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-bottom: 18px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 700;
+  }
+
+  .flashcard-main {
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1.35;
+    margin-bottom: 14px;
+    letter-spacing: -0.3px;
+  }
+
+  .flashcard-sub {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    font-style: italic;
+    max-width: 440px;
+  }
+
+  .flashcard-source {
+    margin-top: 18px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-style: normal;
+  }
+
+  .flip-hint {
+    margin-top: 20px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    letter-spacing: 0.03em;
+  }
+
+  .review-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-rate {
+    padding: 13px 28px;
+    font-size: 15px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    border: 2px solid;
+    transition: all 0.15s;
+  }
+
+  .btn-hard { background: var(--red-light); color: var(--red); border-color: var(--red); }
+  .btn-hard:hover { background: var(--red); color: white; }
+
+  .btn-good { background: var(--green-light); color: var(--green); border-color: var(--green); }
+  .btn-good:hover { background: var(--green); color: white; }
+
+  .btn-easy { background: var(--accent-light); color: var(--accent-dark); border-color: var(--accent); }
+  .btn-easy:hover { background: var(--accent); color: white; }
+
+  /* ── Review done ── */
+  .review-done {
+    text-align: center;
+    padding: 48px 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+
+  .review-done-icon { font-size: 60px; margin-bottom: 16px; }
+  .review-done-title { font-size: 26px; font-weight: 800; margin-bottom: 10px; }
+  .review-done-sub { color: var(--text-secondary); margin-bottom: 28px; line-height: 1.8; font-size: 15px; }
+
+  .result-chips {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+
+  .result-chip {
+    padding: 8px 18px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  /* ── Stats ── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 20px;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+
+  .stat-number {
+    font-size: 42px;
+    font-weight: 900;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 6px;
+    letter-spacing: -1px;
+  }
+
+  .stat-label { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
+
+  .source-bar-wrap { margin-top: 28px; }
+  .source-bar-title { font-size: 16px; font-weight: 700; margin-bottom: 14px; }
+
+  .source-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+
+  .source-bar-label { width: 80px; flex-shrink: 0; color: var(--text-secondary); font-weight: 500; }
+  .source-bar-track { flex: 1; height: 10px; background: var(--surface2); border-radius: 100px; overflow: hidden; }
+  .source-bar-fill { height: 100%; border-radius: 100px; background: var(--accent); transition: width 0.5s; }
+  .source-bar-count { width: 30px; text-align: right; font-weight: 700; color: var(--text); }
+
+  .recently-list { display: flex; flex-direction: column; gap: 8px; }
+
+  .recently-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 14px;
+  }
+
+  .recently-item-en { font-weight: 700; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .recently-item-ko { color: var(--accent-dark); flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .recently-item-date { font-size: 12px; color: var(--text-secondary); white-space: nowrap; }
+
+  /* ── Modal ── */
+  .modal-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    backdrop-filter: blur(2px);
+  }
+
+  .modal-backdrop.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 28px;
+    width: 100%;
+    max-width: 640px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .modal-title { font-size: 18px; font-weight: 800; }
+
+  /* ── Toast ── */
+  .toast {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: #1a1208;
+    color: white;
+    padding: 12px 22px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), opacity 0.3s;
+    z-index: 999;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+  /* ── Divider ── */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+
+  /* ── Responsive ── */
+  @media (max-width: 600px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .flashcard-main { font-size: 21px; }
+    .flashcard-front, .flashcard-back { padding: 32px 24px; }
+    nav { padding: 0 12px; }
+    .nav-brand { display: none; }
+    main { padding: 20px 14px; }
+    .section-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .config-row { flex-direction: column; align-items: flex-start; }
+    .config-row select { min-width: 100%; width: 100%; }
+    .review-config { padding: 24px 18px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ──────────── NAV ──────────── -->
+<nav>
+  <div class="nav-brand">📖 표현 노트</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('add')">✏️ 추가</button>
+    <button class="nav-tab" onclick="showPage('collection')">📚 표현집</button>
+    <button class="nav-tab" onclick="showPage('review')">🔁 복습</button>
+    <button class="nav-tab" onclick="showPage('stats')">📊 통계</button>
+  </div>
+</nav>
+
+<main>
+
+  <!-- ══════════════ ADD ══════════════ -->
+  <div id="page-add" class="page active">
+    <div class="section-header">
+      <div>
+        <div class="section-title">새 표현 추가</div>
+        <div class="section-sub">기사, 팟캐스트, 영상에서 발견한 표현을 저장하세요.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <form id="add-form" onsubmit="handleAddSubmit(event)">
+        <div class="form-grid">
+
+          <div class="form-group full">
+            <label>영어 표현 *</label>
+            <input type="text" id="f-english" placeholder="e.g. hit the ground running" required autofocus>
+          </div>
+
+          <div class="form-group full">
+            <label>한국어 의미 *</label>
+            <input type="text" id="f-korean" placeholder="e.g. 즉시 성과를 내다, 단번에 시작하다" required>
+          </div>
+
+          <div class="form-group full">
+            <label>영어 예문</label>
+            <textarea id="f-english-ex" placeholder="e.g. She hit the ground running on her first day at the new job."></textarea>
+          </div>
+
+          <div class="form-group full">
+            <label>한국어 예문</label>
+            <textarea id="f-korean-ex" placeholder="e.g. 그녀는 새 직장 첫날부터 곧바로 성과를 냈다."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>출처 유형</label>
+            <select id="f-source-type">
+              <option value="article">📰 기사 (Article)</option>
+              <option value="podcast">🎙️ 팟캐스트 (Podcast)</option>
+              <option value="drama">📺 드라마 / TV</option>
+              <option value="movie">🎬 영화</option>
+              <option value="book">📗 책</option>
+              <option value="other">📌 기타</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>출처 이름 (선택)</label>
+            <input type="text" id="f-source-name" placeholder="e.g. The Economist, NPR Politics…">
+          </div>
+
+          <div class="form-group full">
+            <label>태그 — Enter 또는 쉼표로 추가</label>
+            <div class="tags-input" id="tags-container" onclick="document.getElementById('tag-input').focus()">
+              <input id="tag-input" type="text" placeholder="이디엄, 비즈니스, 뉴스…"
+                onkeydown="handleTagInput(event)">
+            </div>
+          </div>
+
+        </div>
+
+        <div style="display:flex; gap:10px; margin-top:22px; justify-content:flex-end;">
+          <button type="button" class="btn btn-secondary" onclick="clearForm()">초기화</button>
+          <button type="submit" class="btn btn-primary">저장하기</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ══════════════ COLLECTION ══════════════ -->
+  <div id="page-collection" class="page">
+    <div class="section-header">
+      <div>
+        <div class="section-title">내 표현집</div>
+        <div class="section-sub" id="collection-count-text">표현 0개</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-shrink:0;">
+        <button class="btn btn-secondary" onclick="exportData()" title="JSON으로 내보내기">⬇️ 내보내기</button>
+        <button class="btn btn-secondary" onclick="document.getElementById('import-file').click()" title="JSON 가져오기">⬆️ 가져오기</button>
+        <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
+      </div>
+    </div>
+
+    <div class="search-bar">
+      <input type="text" id="search-input" placeholder="🔍  표현 검색…" oninput="renderCollection()">
+      <select id="filter-source" onchange="renderCollection()">
+        <option value="">모든 출처</option>
+        <option value="article">기사</option>
+        <option value="podcast">팟캐스트</option>
+        <option value="drama">드라마/TV</option>
+        <option value="movie">영화</option>
+        <option value="book">책</option>
+        <option value="other">기타</option>
+      </select>
+      <select id="sort-by" onchange="renderCollection()">
+        <option value="newest">최신순</option>
+        <option value="oldest">오래된순</option>
+        <option value="alpha">알파벳순</option>
+        <option value="review">복습 많은 순</option>
+      </select>
+    </div>
+
+    <div id="collection-list" class="expressions-list"></div>
+  </div>
+
+  <!-- ══════════════ REVIEW ══════════════ -->
+  <div id="page-review" class="page">
+
+    <!-- Config -->
+    <div id="review-config-view">
+      <div class="section-header">
+        <div>
+          <div class="section-title">복습하기</div>
+          <div class="section-sub">플래시카드로 영한 · 한영을 번갈아 연습하세요.</div>
+        </div>
+      </div>
+      <div class="review-config">
+        <div class="config-title">🃏 복습 설정</div>
+        <div class="config-sub">복습할 범위와 방향을 선택한 뒤 시작하세요.</div>
+        <div class="config-options">
+          <div class="config-row">
+            <label>복습 방향</label>
+            <select id="review-direction">
+              <option value="en-ko">영어 → 한국어</option>
+              <option value="ko-en">한국어 → 영어</option>
+              <option value="random">랜덤 (영·한 혼합)</option>
+            </select>
+          </div>
+          <div class="config-row">
+            <label>출처 필터</label>
+            <select id="review-source">
+              <option value="">전체</option>
+              <option value="article">기사</option>
+              <option value="podcast">팟캐스트</option>
+              <option value="drama">드라마/TV</option>
+              <option value="movie">영화</option>
+              <option value="book">책</option>
+              <option value="other">기타</option>
+            </select>
+          </div>
+          <div class="config-row">
+            <label>카드 수</label>
+            <select id="review-count">
+              <option value="10">10장</option>
+              <option value="20" selected>20장</option>
+              <option value="50">50장</option>
+              <option value="all">전체</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-primary" style="width:100%;padding:15px;font-size:15px;" onclick="startReview()">복습 시작</button>
+      </div>
+    </div>
+
+    <!-- Session -->
+    <div id="review-session-view" style="display:none;">
+      <div class="section-header">
+        <div>
+          <div class="section-title">복습 중</div>
+          <div class="review-progress" id="review-progress-text">0 / 0</div>
+        </div>
+        <button class="btn btn-ghost" onclick="endReview()">✕ 종료</button>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar" id="review-progress-bar" style="width:0%"></div>
+      </div>
+
+      <div class="flashcard-area">
+        <div class="flashcard" id="flashcard" onclick="flipCard()">
+          <div class="flashcard-inner">
+            <div class="flashcard-front">
+              <div class="flashcard-hint" id="card-front-hint">영어 표현</div>
+              <div class="flashcard-main" id="card-front-main"></div>
+              <div class="flashcard-sub"  id="card-front-sub"></div>
+              <div class="flashcard-source" id="card-front-source"></div>
+              <div class="flip-hint">카드를 클릭해 뒤집기 👆</div>
+            </div>
+            <div class="flashcard-back">
+              <div class="flashcard-hint" id="card-back-hint">한국어 의미</div>
+              <div class="flashcard-main" id="card-back-main"></div>
+              <div class="flashcard-sub"  id="card-back-sub"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="review-buttons" id="review-buttons" style="display:none;">
+          <button class="btn btn-rate btn-hard" onclick="rateCard('hard')">😓 어려워요</button>
+          <button class="btn btn-rate btn-good" onclick="rateCard('good')">👍 알겠어요</button>
+          <button class="btn btn-rate btn-easy" onclick="rateCard('easy')">⚡ 쉬워요</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Done -->
+    <div id="review-done-view" style="display:none;">
+      <div class="review-done">
+        <div class="review-done-icon">🎉</div>
+        <div class="review-done-title">복습 완료!</div>
+        <div class="result-chips" id="review-done-chips"></div>
+        <div class="review-done-sub" id="review-done-sub">수고하셨습니다.</div>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+          <button class="btn btn-primary" style="padding:12px 24px;" onclick="startReview()">다시 복습</button>
+          <button class="btn btn-secondary" style="padding:12px 24px;" onclick="endReview()">설정으로 돌아가기</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════ STATS ══════════════ -->
+  <div id="page-stats" class="page">
+    <div class="section-header">
+      <div>
+        <div class="section-title">통계</div>
+        <div class="section-sub">나의 학습 현황을 확인하세요.</div>
+      </div>
+    </div>
+
+    <div class="stats-grid" id="stats-grid"></div>
+
+    <div id="source-bar-wrap" class="source-bar-wrap" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);margin-bottom:28px;">
+      <div class="source-bar-title">출처별 표현 수</div>
+      <div id="source-bars"></div>
+    </div>
+
+    <div style="font-size:16px;font-weight:700;margin-bottom:14px;">📅 최근 추가된 표현</div>
+    <div id="recently-list" class="recently-list"></div>
+
+    <hr class="divider">
+    <div style="display:flex;gap:10px;justify-content:flex-end;align-items:center;">
+      <span style="font-size:13px;color:var(--text-secondary);">데이터 관리</span>
+      <button class="btn btn-secondary" onclick="exportData()">⬇️ 내보내기 (JSON)</button>
+      <button class="btn btn-danger" onclick="clearAllData()">🗑️ 전체 삭제</button>
+    </div>
+  </div>
+
+</main>
+
+<!-- ──────────── EDIT MODAL ──────────── -->
+<div class="modal-backdrop" id="edit-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">표현 수정</div>
+      <button class="btn btn-ghost" onclick="closeEditModal()">✕</button>
+    </div>
+    <form onsubmit="handleEditSubmit(event)">
+      <input type="hidden" id="edit-id">
+      <div class="form-grid">
+        <div class="form-group full">
+          <label>영어 표현 *</label>
+          <input type="text" id="edit-english" required>
+        </div>
+        <div class="form-group full">
+          <label>한국어 의미 *</label>
+          <input type="text" id="edit-korean" required>
+        </div>
+        <div class="form-group full">
+          <label>영어 예문</label>
+          <textarea id="edit-english-ex"></textarea>
+        </div>
+        <div class="form-group full">
+          <label>한국어 예문</label>
+          <textarea id="edit-korean-ex"></textarea>
+        </div>
+        <div class="form-group">
+          <label>출처 유형</label>
+          <select id="edit-source-type">
+            <option value="article">📰 기사</option>
+            <option value="podcast">🎙️ 팟캐스트</option>
+            <option value="drama">📺 드라마/TV</option>
+            <option value="movie">🎬 영화</option>
+            <option value="book">📗 책</option>
+            <option value="other">📌 기타</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>출처 이름</label>
+          <input type="text" id="edit-source-name">
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end;">
+        <button type="button" class="btn btn-secondary" onclick="closeEditModal()">취소</button>
+        <button type="submit" class="btn btn-primary">저장</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ──────────── TOAST ──────────── -->
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+
+/* ══════════════════════════════════════
+   DATA LAYER
+══════════════════════════════════════ */
+const STORAGE_KEY = 'expression_bank_v1';
+
+function loadData() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+  catch { return []; }
+}
+
+function saveData(data) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function generateId() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2);
+}
+
+/* ══════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════ */
+const PAGES = ['add', 'collection', 'review', 'stats'];
+
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelectorAll('.nav-tab')[PAGES.indexOf(name)].classList.add('active');
+
+  if (name === 'collection') renderCollection();
+  if (name === 'stats') renderStats();
+  if (name === 'review') endReview();
+}
+
+/* ══════════════════════════════════════
+   TAGS
+══════════════════════════════════════ */
+let currentTags = [];
+
+function handleTagInput(event) {
+  const val = event.target.value.trim().replace(/,/g, '');
+  if ((event.key === 'Enter' || event.key === ',') && val) {
+    event.preventDefault();
+    if (!currentTags.includes(val)) { currentTags.push(val); renderTags(); }
+    event.target.value = '';
+  } else if (event.key === 'Backspace' && event.target.value === '' && currentTags.length) {
+    currentTags.pop(); renderTags();
+  }
+}
+
+function renderTags() {
+  const container = document.getElementById('tags-container');
+  const input = document.getElementById('tag-input');
+  container.innerHTML = '';
+  currentTags.forEach((tag, i) => {
+    const pill = document.createElement('span');
+    pill.className = 'tag-pill';
+    pill.innerHTML = `${esc(tag)} <button type="button" onclick="removeTag(${i})">×</button>`;
+    container.appendChild(pill);
+  });
+  container.appendChild(input);
+  input.focus();
+}
+
+function removeTag(i) { currentTags.splice(i, 1); renderTags(); }
+
+/* ══════════════════════════════════════
+   ADD
+══════════════════════════════════════ */
+function handleAddSubmit(e) {
+  e.preventDefault();
+  const data = loadData();
+  data.unshift({
+    id: generateId(),
+    english:        document.getElementById('f-english').value.trim(),
+    korean:         document.getElementById('f-korean').value.trim(),
+    englishExample: document.getElementById('f-english-ex').value.trim(),
+    koreanExample:  document.getElementById('f-korean-ex').value.trim(),
+    sourceType:     document.getElementById('f-source-type').value,
+    sourceName:     document.getElementById('f-source-name').value.trim(),
+    tags:           [...currentTags],
+    createdAt:      Date.now(),
+    reviewCount:    0,
+    lastReviewed:   null,
+  });
+  saveData(data);
+  clearForm();
+  showToast('✅ 표현이 저장되었습니다!');
+}
+
+function clearForm() {
+  document.getElementById('add-form').reset();
+  currentTags = [];
+  renderTags();
+  document.getElementById('f-english').focus();
+}
+
+/* ══════════════════════════════════════
+   COLLECTION
+══════════════════════════════════════ */
+const SOURCE_LABELS = {
+  article:'기사', podcast:'팟캐스트', drama:'드라마/TV',
+  movie:'영화', book:'책', other:'기타'
+};
+
+function renderCollection() {
+  const data     = loadData();
+  const search   = document.getElementById('search-input').value.toLowerCase();
+  const src      = document.getElementById('filter-source').value;
+  const sortBy   = document.getElementById('sort-by').value;
+
+  let items = data.filter(item => {
+    const q = search;
+    return (!q || item.english.toLowerCase().includes(q)
+                || item.korean.toLowerCase().includes(q)
+                || (item.englishExample || '').toLowerCase().includes(q)
+                || (item.koreanExample  || '').toLowerCase().includes(q)
+                || (item.tags || []).some(t => t.toLowerCase().includes(q)))
+        && (!src || item.sourceType === src);
+  });
+
+  if (sortBy === 'newest') items.sort((a,b) => b.createdAt - a.createdAt);
+  else if (sortBy === 'oldest') items.sort((a,b) => a.createdAt - b.createdAt);
+  else if (sortBy === 'alpha') items.sort((a,b) => a.english.localeCompare(b.english));
+  else if (sortBy === 'review') items.sort((a,b) => (b.reviewCount||0) - (a.reviewCount||0));
+
+  document.getElementById('collection-count-text').textContent =
+    `표현 ${data.length}개 (${items.length}개 표시)`;
+
+  const list = document.getElementById('collection-list');
+  if (!items.length) {
+    list.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">${data.length ? '🔍' : '📖'}</div>
+      <div class="empty-title">${data.length ? '검색 결과가 없습니다' : '아직 표현이 없어요'}</div>
+      <div class="empty-desc">${data.length ? '다른 키워드로 검색해보세요.' : '새 표현 추가 탭에서 첫 번째 표현을 저장해보세요.'}</div>
+    </div>`;
+    return;
+  }
+
+  list.innerHTML = items.map(item => {
+    const date  = fmtDate(item.createdAt);
+    const tags  = (item.tags||[]).map(t => `<span class="tag-pill" style="font-size:11px;padding:1px 7px;">${esc(t)}</span>`).join('');
+    const hasEx = item.englishExample || item.koreanExample;
+    return `
+    <div class="expr-card">
+      <div class="expr-main">
+        <div class="expr-content">
+          <div class="expr-english">${esc(item.english)}</div>
+          <div class="expr-korean">${esc(item.korean)}</div>
+          <div class="expr-meta">
+            <span class="source-badge source-${item.sourceType}">${SOURCE_LABELS[item.sourceType]||'기타'}</span>
+            ${item.sourceName ? `<span class="source-name">${esc(item.sourceName)}</span>` : ''}
+            <span class="expr-date">${date}</span>
+            ${item.reviewCount > 0 ? `<span class="expr-review-badge">복습 ${item.reviewCount}회</span>` : ''}
+            ${tags}
+          </div>
+        </div>
+        <div class="expr-actions">
+          ${hasEx ? `<button class="icon-btn" onclick="toggleEx('ex-${item.id}')" title="예문">📝</button>` : ''}
+          <button class="icon-btn" onclick="openEditModal('${item.id}')" title="수정">✏️</button>
+          <button class="icon-btn delete" onclick="deleteExpr('${item.id}')" title="삭제">🗑️</button>
+        </div>
+      </div>
+      ${hasEx ? `<div class="expr-examples" id="ex-${item.id}">
+        ${item.englishExample ? `<div class="expr-example-en">"${esc(item.englishExample)}"</div>` : ''}
+        ${item.koreanExample  ? `<div class="expr-example-ko">"${esc(item.koreanExample)}"</div>`  : ''}
+      </div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function toggleEx(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('open');
+}
+
+function deleteExpr(id) {
+  if (!confirm('이 표현을 삭제할까요?')) return;
+  saveData(loadData().filter(e => e.id !== id));
+  renderCollection();
+  showToast('🗑️ 삭제되었습니다.');
+}
+
+/* ══════════════════════════════════════
+   EDIT MODAL
+══════════════════════════════════════ */
+function openEditModal(id) {
+  const item = loadData().find(e => e.id === id);
+  if (!item) return;
+  document.getElementById('edit-id').value          = id;
+  document.getElementById('edit-english').value     = item.english;
+  document.getElementById('edit-korean').value      = item.korean;
+  document.getElementById('edit-english-ex').value  = item.englishExample || '';
+  document.getElementById('edit-korean-ex').value   = item.koreanExample  || '';
+  document.getElementById('edit-source-type').value = item.sourceType;
+  document.getElementById('edit-source-name').value = item.sourceName || '';
+  document.getElementById('edit-modal').classList.add('open');
+}
+
+function closeEditModal() { document.getElementById('edit-modal').classList.remove('open'); }
+
+function handleEditSubmit(e) {
+  e.preventDefault();
+  const id = document.getElementById('edit-id').value;
+  const data = loadData();
+  const idx = data.findIndex(e => e.id === id);
+  if (idx < 0) return;
+  data[idx] = { ...data[idx],
+    english:        document.getElementById('edit-english').value.trim(),
+    korean:         document.getElementById('edit-korean').value.trim(),
+    englishExample: document.getElementById('edit-english-ex').value.trim(),
+    koreanExample:  document.getElementById('edit-korean-ex').value.trim(),
+    sourceType:     document.getElementById('edit-source-type').value,
+    sourceName:     document.getElementById('edit-source-name').value.trim(),
+  };
+  saveData(data);
+  closeEditModal();
+  renderCollection();
+  showToast('✅ 수정되었습니다!');
+}
+
+document.getElementById('edit-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeEditModal();
+});
+
+/* ══════════════════════════════════════
+   REVIEW
+══════════════════════════════════════ */
+let reviewQueue = [];
+let reviewIdx   = 0;
+let reviewFlipped = false;
+let reviewStats = { hard:0, good:0, easy:0 };
+
+function startReview() {
+  const data   = loadData();
+  const src    = document.getElementById('review-source').value;
+  const cntVal = document.getElementById('review-count').value;
+
+  let pool = src ? data.filter(e => e.sourceType === src) : [...data];
+  if (!pool.length) { showToast('⚠️ 복습할 표현이 없습니다. 먼저 추가해주세요.'); return; }
+
+  pool = pool.sort(() => Math.random() - 0.5);
+  const count = cntVal === 'all' ? pool.length : Math.min(parseInt(cntVal), pool.length);
+  reviewQueue = pool.slice(0, count);
+  reviewIdx   = 0;
+  reviewStats = { hard:0, good:0, easy:0 };
+
+  document.getElementById('review-config-view').style.display = 'none';
+  document.getElementById('review-done-view').style.display   = 'none';
+  document.getElementById('review-session-view').style.display = 'block';
+  showCard();
+}
+
+function showCard() {
+  if (reviewIdx >= reviewQueue.length) { showReviewDone(); return; }
+
+  const item = reviewQueue[reviewIdx];
+  const dir  = document.getElementById('review-direction').value;
+  const enFirst = dir === 'en-ko' || (dir === 'random' && Math.random() > 0.5);
+
+  const card = document.getElementById('flashcard');
+  card.classList.remove('flipped');
+  reviewFlipped = false;
+  document.getElementById('review-buttons').style.display = 'none';
+
+  const [fHint, fMain, fSub, bHint, bMain, bSub] = enFirst
+    ? [
+        '영어 표현', item.english, item.englishExample || '',
+        '한국어 의미', item.korean, item.koreanExample || ''
+      ]
+    : [
+        '한국어 표현', item.korean, item.koreanExample || '',
+        '영어 표현', item.english, item.englishExample || ''
+      ];
+
+  document.getElementById('card-front-hint').textContent   = fHint;
+  document.getElementById('card-front-main').textContent   = fMain;
+  document.getElementById('card-front-sub').textContent    = fSub;
+  document.getElementById('card-front-source').textContent = item.sourceName ? `출처: ${item.sourceName}` : '';
+  document.getElementById('card-back-hint').textContent    = bHint;
+  document.getElementById('card-back-main').textContent    = bMain;
+  document.getElementById('card-back-sub').textContent     = bSub;
+
+  const total = reviewQueue.length;
+  document.getElementById('review-progress-text').textContent = `${reviewIdx + 1} / ${total}`;
+  document.getElementById('review-progress-bar').style.width  = `${(reviewIdx / total) * 100}%`;
+}
+
+function flipCard() {
+  if (reviewFlipped) return;
+  reviewFlipped = true;
+  document.getElementById('flashcard').classList.add('flipped');
+  document.getElementById('review-buttons').style.display = 'flex';
+}
+
+function rateCard(rating) {
+  reviewStats[rating]++;
+  const item = reviewQueue[reviewIdx];
+  const data = loadData();
+  const idx  = data.findIndex(e => e.id === item.id);
+  if (idx >= 0) {
+    data[idx].reviewCount = (data[idx].reviewCount || 0) + 1;
+    data[idx].lastReviewed = Date.now();
+    saveData(data);
+  }
+  reviewIdx++;
+  showCard();
+}
+
+function showReviewDone() {
+  document.getElementById('review-session-view').style.display = 'none';
+  document.getElementById('review-done-view').style.display    = 'block';
+
+  const total = reviewStats.hard + reviewStats.good + reviewStats.easy;
+  document.getElementById('review-done-chips').innerHTML = `
+    <span class="result-chip" style="background:var(--red-light);color:var(--red);">😓 어려워요 ${reviewStats.hard}</span>
+    <span class="result-chip" style="background:var(--green-light);color:var(--green);">👍 알겠어요 ${reviewStats.good}</span>
+    <span class="result-chip" style="background:var(--accent-light);color:var(--accent-dark);">⚡ 쉬워요 ${reviewStats.easy}</span>
+  `;
+  document.getElementById('review-done-sub').textContent = `총 ${total}개 표현을 복습했습니다. 수고하셨습니다!`;
+  document.getElementById('review-progress-bar').style.width = '100%';
+  document.getElementById('review-progress-text').textContent = `${reviewQueue.length} / ${reviewQueue.length}`;
+}
+
+function endReview() {
+  document.getElementById('review-session-view').style.display = 'none';
+  document.getElementById('review-done-view').style.display    = 'none';
+  document.getElementById('review-config-view').style.display  = 'block';
+}
+
+/* ══════════════════════════════════════
+   STATS
+══════════════════════════════════════ */
+function renderStats() {
+  const data         = loadData();
+  const total        = data.length;
+  const reviewed     = data.filter(e => e.reviewCount > 0).length;
+  const totalReviews = data.reduce((s,e) => s + (e.reviewCount||0), 0);
+
+  const srcCount = {};
+  data.forEach(e => { srcCount[e.sourceType] = (srcCount[e.sourceType]||0) + 1; });
+  const topSrc = Object.entries(srcCount).sort((a,b)=>b[1]-a[1])[0];
+
+  document.getElementById('stats-grid').innerHTML = `
+    <div class="stat-card"><div class="stat-number">${total}</div><div class="stat-label">총 표현 수</div></div>
+    <div class="stat-card"><div class="stat-number">${totalReviews}</div><div class="stat-label">총 복습 횟수</div></div>
+    <div class="stat-card"><div class="stat-number">${reviewed}</div><div class="stat-label">복습 완료 표현</div></div>
+    <div class="stat-card"><div class="stat-number" style="font-size:26px;">${topSrc ? SOURCE_LABELS[topSrc[0]] : '—'}</div><div class="stat-label">최다 출처${topSrc ? ' ('+topSrc[1]+'개)' : ''}</div></div>
+  `;
+
+  const maxCount = Math.max(...Object.values(srcCount), 1);
+  const srcOrder = ['article','podcast','drama','movie','book','other'];
+  document.getElementById('source-bars').innerHTML = srcOrder
+    .filter(s => srcCount[s])
+    .map(s => `
+      <div class="source-bar-row">
+        <span class="source-bar-label">${SOURCE_LABELS[s]}</span>
+        <div class="source-bar-track">
+          <div class="source-bar-fill" style="width:${(srcCount[s]/maxCount*100).toFixed(1)}%"></div>
+        </div>
+        <span class="source-bar-count">${srcCount[s]}</span>
+      </div>`).join('') || '<div style="color:var(--text-secondary);font-size:14px;">아직 표현이 없습니다.</div>';
+
+  const recent = [...data].sort((a,b)=>b.createdAt-a.createdAt).slice(0,8);
+  document.getElementById('recently-list').innerHTML = recent.length
+    ? recent.map(item => `
+      <div class="recently-item">
+        <span class="recently-item-en">${esc(item.english)}</span>
+        <span class="recently-item-ko">${esc(item.korean)}</span>
+        <span class="recently-item-date">${fmtDate(item.createdAt)}</span>
+      </div>`).join('')
+    : '<div style="color:var(--text-secondary);font-size:14px;padding:14px 0;">아직 표현이 없습니다.</div>';
+}
+
+/* ══════════════════════════════════════
+   IMPORT / EXPORT
+══════════════════════════════════════ */
+function exportData() {
+  const blob = new Blob([JSON.stringify(loadData(), null, 2)], { type:'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = Object.assign(document.createElement('a'), { href:url, download:`expression-bank-${new Date().toISOString().slice(0,10)}.json` });
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('⬇️ 내보내기 완료!');
+}
+
+function importData(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const imported = JSON.parse(ev.target.result);
+      if (!Array.isArray(imported)) throw new Error();
+      const existing = loadData();
+      const ids = new Set(existing.map(e => e.id));
+      const added = imported.filter(e => !ids.has(e.id));
+      saveData([...existing, ...added]);
+      renderCollection();
+      showToast(`✅ ${added.length}개 가져왔습니다.`);
+    } catch { showToast('❌ 파일 형식이 올바르지 않습니다.'); }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+function clearAllData() {
+  if (!confirm('모든 표현을 삭제할까요? 이 작업은 되돌릴 수 없습니다.')) return;
+  saveData([]);
+  renderCollection();
+  renderStats();
+  showToast('🗑️ 전체 삭제되었습니다.');
+}
+
+/* ══════════════════════════════════════
+   HELPERS
+══════════════════════════════════════ */
+function esc(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function fmtDate(ts) {
+  return new Date(ts).toLocaleDateString('ko-KR', { month:'short', day:'numeric' });
+}
+
+let toastTimer;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2600);
+}
+
+/* ══════════════════════════════════════
+   SAMPLE DATA (first run only)
+══════════════════════════════════════ */
+if (!loadData().length) {
+  const now = Date.now();
+  saveData([
+    {
+      id: generateId(),
+      english: 'hit the ground running',
+      korean: '즉시 성과를 내다, 처음부터 전력 질주하다',
+      englishExample: 'She hit the ground running on her first day and closed three deals.',
+      koreanExample: '그녀는 첫날부터 곧바로 성과를 내어 계약 세 건을 성사시켰다.',
+      sourceType: 'podcast', sourceName: 'NPR Politics',
+      tags: ['이디엄', '비즈니스'],
+      createdAt: now - 864e5*3, reviewCount: 2, lastReviewed: now - 864e5,
+    },
+    {
+      id: generateId(),
+      english: 'a double-edged sword',
+      korean: '양날의 검, 장단점이 공존하는 것',
+      englishExample: 'Social media is a double-edged sword — it connects people but also spreads misinformation.',
+      koreanExample: '소셜 미디어는 양날의 검이다. 사람들을 연결하는 동시에 허위 정보를 퍼뜨린다.',
+      sourceType: 'article', sourceName: 'The Economist',
+      tags: ['이디엄', '뉴스'],
+      createdAt: now - 864e5*1, reviewCount: 0, lastReviewed: null,
+    },
+    {
+      id: generateId(),
+      english: 'kick the can down the road',
+      korean: '문제를 미래로 미루다, 해결을 연기하다',
+      englishExample: 'Politicians keep kicking the can down the road on pension reform.',
+      koreanExample: '정치인들은 연금 개혁 문제를 계속해서 미래로 미루고 있다.',
+      sourceType: 'article', sourceName: 'Financial Times',
+      tags: ['이디엄', '정치'],
+      createdAt: now - 864e5*7, reviewCount: 1, lastReviewed: now - 864e5*2,
+    },
+    {
+      id: generateId(),
+      english: 'on the same page',
+      korean: '같은 생각이다, 의견이 일치하다',
+      englishExample: 'Before we proceed, let\'s make sure we\'re all on the same page.',
+      koreanExample: '진행하기 전에 모두 같은 인식을 공유하고 있는지 확인합시다.',
+      sourceType: 'podcast', sourceName: 'TED Radio Hour',
+      tags: ['이디엄', '소통'],
+      createdAt: now - 864e5*5, reviewCount: 3, lastReviewed: now - 864e5,
+    },
+  ]);
+}
+</script>
+</body>
+</html>
