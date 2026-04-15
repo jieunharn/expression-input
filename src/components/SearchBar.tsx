@@ -25,6 +25,7 @@ export function SearchBar({ placeholder = "검색…", paramName = "q" }: Props)
     const v = value.trim();
     if (v) next.set(paramName, v);
     else next.delete(paramName);
+    next.delete("page");
     router.push(`?${next.toString()}`);
   }, [router, sp, value, paramName]);
 

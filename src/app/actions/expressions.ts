@@ -10,11 +10,19 @@ import {
 import { parseTagList } from "@/lib/utils";
 import type { KoreanOption } from "@/types";
 
-export async function searchExpressions(query: string, categoryId?: string) {
+export async function searchExpressions(
+  query: string,
+  categoryId?: string,
+  sourceType?: string,
+  page = 1,
+  pageSize = 12
+) {
   const q = query.trim();
-  const where: Parameters<typeof prisma.expression.findMany>[0]["where"] = {};
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const where: any = {};
 
   if (categoryId) where.categoryId = categoryId;
+  if (sourceType) where.sourceType = sourceType;
 
   if (q) {
     where.OR = [
@@ -22,15 +30,25 @@ export async function searchExpressions(query: string, categoryId?: string) {
       { exampleEn: { contains: q } },
       { exampleKo: { contains: q } },
       { notes: { contains: q } },
+      { source: { contains: q } },
       { tags: { some: { name: { contains: q } } } },
     ];
   }
 
-  return prisma.expression.findMany({
-    where,
-    include: { category: true, tags: true },
-    orderBy: { updatedAt: "desc" },
-  });
+  const skip = (page - 1) * pageSize;
+
+  const [expressions, total] = await Promise.all([
+    prisma.expression.findMany({
+      where,
+      include: { category: true, tags: true },
+      orderBy: { updatedAt: "desc" },
+      skip,
+      take: pageSize,
+    }),
+    prisma.expression.count({ where }),
+  ]);
+
+  return { expressions, total };
 }
 
 export async function getExpression(id: string) {
@@ -46,9 +64,12 @@ export type SaveExpressionInput = {
   exampleEn?: string;
   exampleKo?: string;
   notes?: string;
+  similarExpressions?: string;
   difficulty: number;
   categoryId: string;
   tagNames: string[];
+  source?: string;
+  sourceType?: string;
 };
 
 export async function saveExpression(input: SaveExpressionInput) {
@@ -64,16 +85,20 @@ export async function saveExpression(input: SaveExpressionInput) {
   );
 
   const created = await prisma.expression.create({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: {
       english: input.english.trim(),
       koreanOptions: input.koreanOptions as object[],
       exampleEn: input.exampleEn?.trim() || null,
       exampleKo: input.exampleKo?.trim() || null,
       notes: input.notes?.trim() || null,
+      similarExpressions: input.similarExpressions?.trim() || null,
       difficulty: Math.min(3, Math.max(1, input.difficulty)),
       categoryId: input.categoryId,
+      source: input.source?.trim() || null,
+      sourceType: input.sourceType || null,
       tags: { connect: tagConnect },
-    },
+    } as any,
   });
 
   revalidatePath("/bank");
@@ -95,16 +120,20 @@ export async function updateExpression(id: string, input: SaveExpressionInput) {
 
   await prisma.expression.update({
     where: { id },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: {
       english: input.english.trim(),
       koreanOptions: input.koreanOptions as object[],
       exampleEn: input.exampleEn?.trim() || null,
       exampleKo: input.exampleKo?.trim() || null,
       notes: input.notes?.trim() || null,
+      similarExpressions: input.similarExpressions?.trim() || null,
       difficulty: Math.min(3, Math.max(1, input.difficulty)),
       categoryId: input.categoryId,
+      source: input.source?.trim() || null,
+      sourceType: input.sourceType || null,
       tags: { set: tagConnect },
-    },
+    } as any,
   });
 
   revalidatePath("/bank");
@@ -149,8 +178,8 @@ export async function bulkImportLines(lines: string[]) {
         data: {
           english,
           koreanOptions: data.korean_options as object[],
-          exampleEn: data.example_en,
-          exampleKo: data.example_ko,
+          exampleEn: data.examples.map((e) => e.en).join("\n"),
+          exampleKo: data.examples.map((e) => e.ko).join("\n"),
           difficulty: data.suggested_difficulty,
           categoryId,
         },
