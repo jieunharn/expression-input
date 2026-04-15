@@ -27,8 +27,8 @@ export function Sidebar() {
   return (
     <aside className="fixed left-0 top-0 z-40 hidden h-screen w-56 border-r border-border bg-card/80 backdrop-blur-md md:block">
       <div className="flex h-14 items-center border-b border-border px-4">
-        <Link href="/" className="font-semibold tracking-tight text-foreground">
-          Expression Bank
+        <Link href="/" className="text-base font-semibold tracking-tight text-foreground">
+          Expressions
         </Link>
       </div>
       <nav className="flex flex-col gap-0.5 p-3">
@@ -52,7 +52,7 @@ export function Sidebar() {
         })}
       </nav>
       <p className="absolute bottom-4 left-4 right-4 text-xs text-muted-foreground">
-        게임 통역 연습 · 로컬 저장
+        통역사·번역가 표현 저장소
       </p>
     </aside>
   );

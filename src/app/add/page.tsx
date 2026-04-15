@@ -34,8 +34,8 @@ export default async function AddPage({ searchParams }: Props) {
       <div className="mx-auto w-full max-w-3xl space-y-4 p-4 pb-16 md:p-8">
         <p className="text-sm text-muted-foreground">
           {aiAutoFillEnabled
-            ? "영문만 입력하고 AI로 한국어 옵션·예문·난이도·카테고리 초안을 채운 뒤, 필요하면 수정하고 저장하세요."
-            : "영문과 한국어 번역·예문 등을 직접 입력해 저장할 수 있습니다. AI 자동 채우기는 API 키를 설정하면 켜집니다."}
+            ? "영문만 입력하고 AI로 한국어 옵션·예문·난이도·카테고리 초안을 채운 뒤, 출처와 메모를 추가해 저장하세요."
+            : "영문과 한국어 번역·예문 등을 직접 입력하고 출처를 기록해 저장할 수 있습니다. AI 자동 채우기는 API 키를 설정하면 켜집니다."}
         </p>
         <AddExpressionForm
           categories={categories}

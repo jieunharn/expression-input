@@ -13,8 +13,9 @@ model Expression {
   koreanOptions Json
   exampleEn     String?
   exampleKo     String?
-  notes         String?
-  difficulty    Int       @default(1)
+  notes               String?
+  similarExpressions  String?
+  difficulty          Int       @default(1)
   categoryId    String
   category      Category  @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   tags          Tag[]
@@ -24,6 +25,9 @@ model Expression {
   repetitions   Int       @default(0)
   nextReview    DateTime  @default(now())
   lastReviewed  DateTime?
+
+  source        String?
+  sourceType    String?
 
   timesStudied  Int       @default(0)
   timesCorrect  Int       @default(0)

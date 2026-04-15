@@ -11,35 +11,42 @@ const enrichSchema = z.object({
       note: z.string(),
     })
   ),
-  example_en: z.string(),
-  example_ko: z.string(),
+  examples: z.array(
+    z.object({
+      en: z.string(),
+      ko: z.string(),
+    })
+  ).min(1).max(3),
+  similar_expressions: z.array(z.string()).min(1).max(3),
   suggested_category: z.enum([
-    "game-dev",
-    "business",
-    "marketing",
-    "technical",
-    "casual",
     "news",
+    "politics",
+    "economics",
+    "culture",
+    "science",
+    "sports",
+    "legal",
+    "entertainment",
+    "business",
   ]),
-  suggested_difficulty: z.coerce
-    .number()
-    .refine((n) => n === 1 || n === 2 || n === 3, "1–3")
-    .transform((n) => n as 1 | 2 | 3),
 });
 
 export type EnrichResult = z.infer<typeof enrichSchema>;
 
-const SYSTEM = `You are an expert Korean↔English interpreter assistant specializing in gaming industry terminology.
+const SYSTEM = `You are an expert Korean↔English translator assistant specializing in the game development industry.
+You help build a personal expression bank for game developers, producers, and localization professionals.
 Always respond with valid JSON only, no markdown fences.`;
 
 const USER_TEMPLATE = (expression: string) => `Given the English expression: "${expression}"
 
 Provide JSON with exactly these keys:
-1. korean_options: array of 2-3 objects, each with translation (Korean string), register ("formal"|"neutral"|"casual"), note (brief Korean explanation of when to use this variant)
-2. example_en: natural example sentence in gaming/business context
-3. example_ko: natural interpreter rendering in Korean (not literal word-for-word)
-4. suggested_category: one of game-dev, business, marketing, technical, casual, news
-5. suggested_difficulty: integer 1 (easy/common), 2 (intermediate), 3 (advanced/nuanced)
+1. korean_options: array of 2-3 objects, each with translation (Korean string), register ("formal"|"neutral"|"casual"), note (brief Korean explanation of when to use this variant — e.g. 게임 디자인 문서, 팀 회의, 퍼블리셔 발표)
+2. examples: array of exactly 3 objects, each with:
+   - en: natural example sentence from game development contexts (e.g. GDC talk, design document, patch notes, developer blog, postmortem, sprint planning, publisher pitch, localization brief)
+   - ko: natural Korean translation suitable for game industry professional communication (not literal word-for-word)
+   Make each example distinct in context (e.g. game design, engineering, production, QA, business/publishing).
+3. similar_expressions: array of 2-3 English expressions that are synonymous or closely related in meaning and usage context
+4. suggested_category: one of news, politics, economics, culture, science, sports, legal, entertainment, business
 
 Respond in JSON only.`;
 

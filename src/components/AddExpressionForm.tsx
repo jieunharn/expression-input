@@ -35,22 +35,32 @@ type Props = {
   aiAutoFillEnabled: boolean;
 };
 
+function initExamples(editing?: Editing | null) {
+  if (editing?.exampleEn) {
+    const ens = (editing.exampleEn ?? "").split("\n");
+    const kos = (editing.exampleKo ?? "").split("\n");
+    const pairs = ens.map((en, i) => ({ en, ko: kos[i] ?? "" }));
+    while (pairs.length < 3) pairs.push({ en: "", ko: "" });
+    return pairs.slice(0, 3);
+  }
+  return Array.from({ length: 3 }, () => ({ en: "", ko: "" }));
+}
+
 export function AddExpressionForm({ categories, editing, aiAutoFillEnabled }: Props) {
   const router = useRouter();
   const [english, setEnglish] = React.useState(editing?.english ?? "");
-  const [koreanOptions, setKoreanOptions] = React.useState<KoreanOption[]>(
-    (editing?.koreanOptions as KoreanOption[] | null) ?? [
-      { translation: "", register: "neutral", note: "" },
-    ]
+  const [koreanText, setKoreanText] = React.useState(
+    (editing?.koreanOptions as KoreanOption[] | null)?.map((o) => o.translation).join(", ") ?? ""
   );
-  const [exampleEn, setExampleEn] = React.useState(editing?.exampleEn ?? "");
-  const [exampleKo, setExampleKo] = React.useState(editing?.exampleKo ?? "");
+  const [examples, setExamples] = React.useState(() => initExamples(editing));
+  const [similarExpressions, setSimilarExpressions] = React.useState(
+    (editing as any)?.similarExpressions ?? ""
+  );
   const [notes, setNotes] = React.useState(editing?.notes ?? "");
-  const [difficulty, setDifficulty] = React.useState(String(editing?.difficulty ?? 1));
   const [categoryId, setCategoryId] = React.useState(
     editing?.categoryId ?? categories[0]?.id ?? ""
   );
-  const [tags, setTags] = React.useState("");
+  const [tags, setTags] = React.useState(editing?.tags?.map((t) => t.name).join(", ") ?? "");
   const [loadingAi, setLoadingAi] = React.useState(false);
   const [saving, setSaving] = React.useState(false);
   const [bulkText, setBulkText] = React.useState("");
@@ -59,11 +69,12 @@ export function AddExpressionForm({ categories, editing, aiAutoFillEnabled }: Pr
   React.useEffect(() => {
     if (!editing) return;
     setEnglish(editing.english);
-    setKoreanOptions((editing.koreanOptions as KoreanOption[]) ?? []);
-    setExampleEn(editing.exampleEn ?? "");
-    setExampleKo(editing.exampleKo ?? "");
+    setKoreanText(
+      (editing.koreanOptions as KoreanOption[])?.map((o) => o.translation).join(", ") ?? ""
+    );
+    setExamples(initExamples(editing));
+    setSimilarExpressions((editing as any)?.similarExpressions ?? "");
     setNotes(editing.notes ?? "");
-    setDifficulty(String(editing.difficulty));
     setCategoryId(editing.categoryId);
     setTags(editing.tags.map((t) => t.name).join(", "));
   }, [editing]);
@@ -76,10 +87,15 @@ export function AddExpressionForm({ categories, editing, aiAutoFillEnabled }: Pr
     setLoadingAi(true);
     try {
       const data = await aiEnrichExpression(english);
-      setKoreanOptions(data.korean_options as KoreanOption[]);
-      setExampleEn(data.example_en);
-      setExampleKo(data.example_ko);
-      setDifficulty(String(data.suggested_difficulty));
+      setKoreanText(data.korean_options.map((o) => o.translation).join(", "));
+      if (data.examples?.length) {
+        const padded = [...data.examples];
+        while (padded.length < 3) padded.push({ en: "", ko: "" });
+        setExamples(padded.slice(0, 3));
+      }
+      if (data.similar_expressions?.length) {
+        setSimilarExpressions(data.similar_expressions.join(", "));
+      }
       if (data.resolvedCategoryId) setCategoryId(data.resolvedCategoryId);
       toast.success("AI가 필드를 채웠습니다. 확인 후 저장하세요.");
     } catch (e) {
@@ -94,7 +110,11 @@ export function AddExpressionForm({ categories, editing, aiAutoFillEnabled }: Pr
       toast.error("영문 표현은 필수입니다.");
       return;
     }
-    const opts = koreanOptions.filter((o) => o.translation.trim());
+    const opts: KoreanOption[] = koreanText
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean)
+      .map((t) => ({ translation: t, register: "neutral" as const, note: "" }));
     if (!opts.length) {
       toast.error("한국어 옵션을 1개 이상 입력하세요.");
       return;
@@ -105,21 +125,34 @@ export function AddExpressionForm({ categories, editing, aiAutoFillEnabled }: Pr
     }
     setSaving(true);
     try {
+      const nonEmpty = examples.filter((e) => e.en.trim() || e.ko.trim());
       const payload = {
         english,
         koreanOptions: opts,
-        exampleEn: exampleEn || undefined,
-        exampleKo: exampleKo || undefined,
+        exampleEn: nonEmpty.map((e) => e.en).join("\n") || undefined,
+        exampleKo: nonEmpty.map((e) => e.ko).join("\n") || undefined,
         notes: notes || undefined,
-        difficulty: Number(difficulty) || 1,
+        similarExpressions: similarExpressions || undefined,
+        difficulty: 1,
         categoryId,
         tagNames: parseTagList(tags),
       };
-      if (editing) await updateExpression(editing.id, payload);
-      else await saveExpression(payload);
-      toast.success(editing ? "수정했습니다." : "저장했습니다.");
-      router.push("/bank");
-      router.refresh();
+      if (editing) {
+        await updateExpression(editing.id, payload);
+        toast.success("수정했습니다.");
+        router.push("/bank");
+        router.refresh();
+      } else {
+        await saveExpression(payload);
+        toast.success("저장했습니다.");
+        setEnglish("");
+        setKoreanText("");
+        setSimilarExpressions("");
+        setExamples(Array.from({ length: 3 }, () => ({ en: "", ko: "" })));
+        setNotes("");
+        setTags("");
+        router.refresh();
+      }
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "저장 실패");
     } finally {
@@ -149,14 +182,6 @@ export function AddExpressionForm({ categories, editing, aiAutoFillEnabled }: Pr
     }
   };
 
-  const updateOption = (i: number, patch: Partial<KoreanOption>) => {
-    setKoreanOptions((prev) => {
-      const next = [...prev];
-      next[i] = { ...next[i], ...patch };
-      return next;
-    });
-  };
-
   return (
     <Tabs defaultValue="single" className="w-full">
       {!aiAutoFillEnabled ? (
@@ -164,7 +189,7 @@ export function AddExpressionForm({ categories, editing, aiAutoFillEnabled }: Pr
           className="mb-4 rounded-md border border-border/70 bg-muted/50 px-3 py-2 text-center text-xs text-muted-foreground"
           role="status"
         >
-          AI auto-fill disabled — add API key to enable
+          AI 자동 채우기 비활성 — .env.local에 ANTHROPIC_API_KEY를 추가하면 활성화됩니다
         </p>
       ) : null}
 
@@ -175,31 +200,25 @@ export function AddExpressionForm({ categories, editing, aiAutoFillEnabled }: Pr
         </TabsTrigger>
       </TabsList>
 
-      <TabsContent value="single" className="space-y-6 pt-4">
+      <TabsContent value="single" className="space-y-4 pt-4">
         <Card>
           <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2 space-y-0">
-            <CardTitle className="text-base">영문 표현</CardTitle>
+            <CardTitle className="text-base">표현 추가</CardTitle>
             <Button
               type="button"
               variant="secondary"
+              size="sm"
               disabled={!aiAutoFillEnabled || loadingAi}
-              title={
-                aiAutoFillEnabled
-                  ? undefined
-                  : "ANTHROPIC_API_KEY를 .env.local에 설정하면 사용할 수 있습니다."
-              }
               onClick={runAi}
             >
-              {loadingAi ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Sparkles className="h-4 w-4" />
-              )}
+              {loadingAi ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
               AI 자동 채우기
             </Button>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="space-y-2">
+
+            {/* 영문 표현 */}
+            <div className="space-y-1.5">
               <Label htmlFor="en">English</Label>
               <Textarea
                 id="en"
@@ -210,104 +229,79 @@ export function AddExpressionForm({ categories, editing, aiAutoFillEnabled }: Pr
               />
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label>난이도 (1–3)</Label>
-                <Select value={difficulty} onValueChange={setDifficulty}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">1 · 인지</SelectItem>
-                    <SelectItem value="2">2 · 능동 회상</SelectItem>
-                    <SelectItem value="3">3 · 실시간 산출</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label>카테고리</Label>
-                <Select value={categoryId} onValueChange={setCategoryId}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="선택" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {categories.map((c) => (
-                      <SelectItem key={c.id} value={c.id}>
-                        {c.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+            {/* 한국어 옵션 */}
+            <div className="space-y-1.5">
+              <Label htmlFor="ko">한국어</Label>
+              <Input
+                id="ko"
+                value={koreanText}
+                onChange={(e) => setKoreanText(e.target.value)}
+                placeholder=""
+              />
             </div>
 
-            <div className="space-y-2">
-              <Label>한국어 옵션 (2–3개 권장)</Label>
-              <div className="space-y-3">
-                {koreanOptions.map((o, i) => (
-                  <div key={i} className="rounded-lg border border-border p-3 space-y-2">
-                    <Input
-                      placeholder="번역"
-                      value={o.translation}
-                      onChange={(e) => updateOption(i, { translation: e.target.value })}
+            {/* 비슷한 표현 */}
+            <div className="space-y-1.5">
+              <Label htmlFor="similar">비슷한 표현</Label>
+              <Input
+                id="similar"
+                value={similarExpressions}
+                onChange={(e) => setSimilarExpressions(e.target.value)}
+                placeholder=""
+              />
+            </div>
+
+            {/* 예문 3개 */}
+            <div className="space-y-1.5">
+              <Label>예문</Label>
+              <div className="space-y-2">
+                {examples.map((ex, i) => (
+                  <div key={i} className="overflow-hidden rounded-lg border border-border">
+                    <Textarea
+                      rows={2}
+                      value={ex.en}
+                      onChange={(e) =>
+                        setExamples((prev) =>
+                          prev.map((item, idx) => idx === i ? { ...item, en: e.target.value } : item)
+                        )
+                      }
+                      placeholder="English example…"
+                      className="rounded-none border-0 border-b border-border font-semibold focus-visible:ring-0 resize-none"
                     />
-                    <div className="grid gap-2 sm:grid-cols-2">
-                      <Select
-                        value={o.register}
-                        onValueChange={(v) => updateOption(i, { register: v })}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="register" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="formal">formal</SelectItem>
-                          <SelectItem value="neutral">neutral</SelectItem>
-                          <SelectItem value="casual">casual</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <Input
-                        placeholder="용법 메모 (한국어)"
-                        value={o.note}
-                        onChange={(e) => updateOption(i, { note: e.target.value })}
-                      />
-                    </div>
+                    <Textarea
+                      rows={2}
+                      value={ex.ko}
+                      onChange={(e) =>
+                        setExamples((prev) =>
+                          prev.map((item, idx) => idx === i ? { ...item, ko: e.target.value } : item)
+                        )
+                      }
+                      placeholder="한국어 번역…"
+                      className="rounded-none border-0 focus-visible:ring-0 resize-none"
+                    />
                   </div>
                 ))}
               </div>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() =>
-                  setKoreanOptions((p) => [
-                    ...p,
-                    { translation: "", register: "neutral", note: "" },
-                  ])
-                }
-              >
-                옵션 추가
-              </Button>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="ex-en">예문 (영문)</Label>
-              <Textarea id="ex-en" rows={2} value={exampleEn} onChange={(e) => setExampleEn(e.target.value)} />
+            {/* 메모 & 태그 */}
+            <div className="space-y-1.5">
+              <Label htmlFor="notes">메모</Label>
+              <Textarea
+                id="notes"
+                rows={2}
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="혼동하기 쉬운 표현, 사용 빈도, 발음 주의…"
+              />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="ex-ko">예문 (통역체 한국어)</Label>
-              <Textarea id="ex-ko" rows={2} value={exampleKo} onChange={(e) => setExampleKo(e.target.value)} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="notes">개인 메모</Label>
-              <Textarea id="notes" rows={2} value={notes} onChange={(e) => setNotes(e.target.value)} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="tags">태그 (쉼표·공백 구분)</Label>
+            <div className="space-y-1.5">
+              <Label htmlFor="tags">태그</Label>
               <Input
                 id="tags"
                 value={tags}
                 onChange={(e) => setTags(e.target.value)}
-                placeholder="anti-cheat, monetization …"
+                placeholder="게임디자인, 기획, UX, 로컬라이제이션…"
               />
             </div>
 
@@ -330,8 +324,8 @@ export function AddExpressionForm({ categories, editing, aiAutoFillEnabled }: Pr
             <CardTitle className="text-base">한 줄에 표현 하나</CardTitle>
             <p className="text-sm text-muted-foreground">
               {aiAutoFillEnabled
-                ? "각 줄마다 Claude로 자동 분석 후 저장합니다. API 호출이 여러 번 발생합니다."
-                : "일괄 가져오기는 API 키가 있을 때만 사용할 수 있습니다. 단일 추가에서 수동으로 입력하세요."}
+                ? "각 줄마다 Claude로 자동 분석 후 저장합니다."
+                : "일괄 가져오기는 API 키가 있을 때만 사용할 수 있습니다."}
             </p>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -340,13 +334,9 @@ export function AddExpressionForm({ categories, editing, aiAutoFillEnabled }: Pr
               value={bulkText}
               onChange={(e) => setBulkText(e.target.value)}
               disabled={!aiAutoFillEnabled}
-              placeholder={"loot box mechanics\nroadmap alignment\nanti-cheat telemetry"}
+              placeholder={"flash in the pan\ntech debt\ncore loop\nretention rate"}
             />
-            <Button
-              type="button"
-              disabled={!aiAutoFillEnabled || bulkRunning}
-              onClick={runBulk}
-            >
+            <Button type="button" disabled={!aiAutoFillEnabled || bulkRunning} onClick={runBulk}>
               {bulkRunning ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
               일괄 처리 시작
             </Button>
