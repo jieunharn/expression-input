@@ -4,13 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && prisma db push && next build",
+    "build": "prisma generate && prisma db push --accept-data-loss && next build",
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate",
-    "db:push": "dotenv -e .env.example -e .env.local -- prisma db push",
-    "db:seed": "dotenv -e .env.example -e .env.local -- prisma db seed",
-    "db:studio": "dotenv -e .env.example -e .env.local -- prisma studio"
+    "db:push": "dotenv -e .env.local -e .env.example -- prisma db push",
+    "db:seed": "dotenv -e .env.local -e .env.example -- prisma db seed",
+    "db:studio": "dotenv -e .env.local -e .env.example -- prisma studio"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
